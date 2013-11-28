@@ -130,7 +130,7 @@
     //if autocompletedelegate is implemented then set accessaryview
     if ([tagDelegate respondsToSelector:@selector(tagField:autoCompleteTagsForTextEntered:)]) {
         autoCompleteView = [[SMAccessoryView alloc] initWithFrame:self.frame];
-        autoCompleteView.delegate = self;
+        autoCompleteView.autoCompleteDelegate = self;
         self.inputAccessoryView = autoCompleteView;
         
     }

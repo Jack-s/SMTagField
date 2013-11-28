@@ -15,7 +15,7 @@
 
 @end
 
-@interface SMAccessoryView : UIView
+@interface SMAccessoryView : UIScrollView
 
 /**
  The tags array, should be returned to SMTagField by its delegate
@@ -23,6 +23,6 @@
 @property (nonatomic, strong) NSArray *tags;
 
 
-@property (weak, nonatomic) id <SMAutoComplete> delegate;
+@property (weak, nonatomic) id <SMAutoComplete> autoCompleteDelegate;
 
 @end

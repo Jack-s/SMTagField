@@ -9,6 +9,9 @@
 #import "SMAccessoryView.h"
 
 @implementation SMAccessoryView
+{
+    UIView              *tagsView;
+}
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -42,17 +45,26 @@
 -(void)setupUI{
     self.backgroundColor        = [UIColor whiteColor];
     self.opaque                 = NO;
-
+    self.userInteractionEnabled = YES;
     
     tags                        = @[];
+    
+    tagsView                    = [[UIView alloc] initWithFrame: CGRectMake(0, 0, 0,0)];
+    tagsView.backgroundColor    = [UIColor clearColor];
+    
+    // Add tagsView
+    if(![tagsView isDescendantOfView: self])
+        [self addSubview: tagsView];
+    
 }
 
 -(void)layoutTags{
-    [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
-    CGRect tagsFrame        = self.frame;
-    tagsFrame.size          = CGSizeMake(0, 30);
-    self.frame          = tagsFrame;
+    [tagsView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    
+    CGRect tagsFrame        = tagsView.frame;
+    tagsFrame.size          = CGSizeMake(0,  self.frame.size.height);
+    tagsView.frame          = tagsFrame;
     
     
     for(NSString *txtTag in tags){
@@ -61,56 +73,25 @@
         [tag addTarget:self action:@selector(tagTapped:) forControlEvents:UIControlEventTouchUpInside];
         
         CGRect tagFrame         = tag.frame;
-        tagFrame.origin.x       = self.frame.size.width + 5;
+        tagFrame.origin.x       = tagsView.frame.size.width + 5;
         tagFrame.origin.y       = (self.frame.size.height - tag.frame.size.height) / 2;
         tag.frame               = tagFrame;
         
-        tagsFrame               = self.frame;
+        tagsFrame               = tagsView.frame;
         tagsFrame.size.width   += (tag.frame.size.width + 5);
-        self.frame          = tagsFrame;
+        tagsView.frame          = tagsFrame;
         
-        [self addSubview: tag];
+        [tagsView addSubview: tag];
     }
-    
-    // If there's not enough room, free up first tags and reposition next ones
-    CGFloat missingWidth= (self.frame.size.width - self.frame.size.width + 40);
-    
-    if(missingWidth > 0){
-        // Remove old tags
-        for(SMTag *tag in self.subviews){
-            if(missingWidth < 0)
-                break;
-            
-            missingWidth -= tag.frame.size.width;
-            
-            [tag removeFromSuperview];
-        }
-        
-        tagsFrame                   = self.frame;
-        
-        tagsFrame.size.width        = 0;
-        
-        self.frame              = tagsFrame;
-        
-        // Reposition
-        for(SMTag *tag in self.subviews){
-            CGRect tagFrame         = tag.frame;
-            tagFrame.origin.x       = self.frame.size.width + 5;
-            tagFrame.origin.y       = (self.frame.size.height - tag.frame.size.height) / 2;
-            tag.frame               = tagFrame;
-            
-            tagsFrame               = self.frame;
-            tagsFrame.size.width   += (tag.frame.size.width + 5);
-            self.frame          = tagsFrame;
-            
-            [self addSubview: tag];
-        }
-    }
+
+    //update content size to match tagsView
+    self.contentSize = tagsFrame.size;
+
 }
 
 -(void)tagTapped:(SMTag *)tag {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(autoCompleteTagTapped:)]) {
-        [self.delegate autoCompleteTagTapped:tag];
+    if (self.autoCompleteDelegate && [self.autoCompleteDelegate respondsToSelector:@selector(autoCompleteTagTapped:)]) {
+        [self.autoCompleteDelegate autoCompleteTagTapped:tag];
     }
 }
          

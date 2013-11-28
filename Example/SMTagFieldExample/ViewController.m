@@ -48,7 +48,7 @@
 }
 
 -(NSArray *)tagField:(SMTagField *)tagField autoCompleteTagsForTextEntered:(NSString *)text {
-    return @[@"AutoTag1", @"AutoTag2", @"AutoTag3"];
+    return @[@"AutoTag1", @"AutoTag2", @"AutoTag3", @"AutoTag4", @"AutoTag5", @"AutoTag6", @"AutoTag7"];
 }
 
 @end
